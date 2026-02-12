@@ -9,51 +9,55 @@ use Illuminate\Http\Request;
 
 class AspirasiController extends Controller
 {
-    // tampilkan form
+    public function index()
+{
+    return view('dashboard');
+}
     public function create()
     {
         $categories = Category::all();
         return view('aspirasi.create', compact('categories'));
     }
 
-    // simpan aspirasi
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|max:200',
-            'description' => 'required',
+            'title'       => 'required|string|max:200',
+            'description' => 'required|string',
+            'location'    => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'attachment' => 'nullable|image|max:2048'
+            'attachment'  => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $path = null;
         if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->store('attachments', 'public');
+            $path = $request->file('attachment')
+                           ->store('attachments', 'public');
         }
 
         $aspirasi = Aspirasi::create([
-            'user_id' => auth()->id(),
-            'category_id' => $request->category_id,
-            'title' => $request->title,
-            'description' => $request->description,
+            'user_id'         => auth()->id(), // ✅ FIX
+            'category_id'     => $request->category_id,
+            'title'           => $request->title,
+            'location'        => $request->location, // ✅ LOKASI
+            'description'     => $request->description,
             'attachment_path' => $path,
-            'status' => 'pending'
+            'status'          => 'pending',
         ]);
 
-        // simpan history awal
         AspirasiHistory::create([
             'aspirasi_id' => $aspirasi->id,
             'from_status' => null,
-            'to_status' => 'pending',
-            'changed_by' => auth()->id(),
-            'note' => 'Aspirasi dibuat oleh siswa'
+            'to_status'   => 'pending',
+            'changed_by'  => auth()->id(), // ✅ FIX
+            'note'        => 'Aspirasi dibuat oleh siswa',
         ]);
 
-        return redirect()->route('aspirasi.history')
+        return redirect()
+            ->route('aspirasi.history')
             ->with('success', 'Aspirasi berhasil dikirim');
     }
 
-    // histori aspirasi siswa
     public function history()
     {
         $items = Aspirasi::with('category')

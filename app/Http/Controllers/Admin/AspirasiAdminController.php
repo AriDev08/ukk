@@ -45,11 +45,12 @@ class AspirasiAdminController extends Controller
             'aspirasi_id' => $aspirasi->id,
             'from_status' => $old,
             'to_status' => $request->status,
-            'changed_by' => auth()->id(),
+            'changed_by' => auth()->id(), 
             'note' => $request->note
         ]);
     
         return redirect()->back()->with('success','Umpan balik berhasil disimpan');
     }
+    
     
 }

@@ -1,62 +1,98 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title','Data Jurusan')
+@section('title', 'Data Jurusan')
 
 @section('content')
-<div class="container">
-    <h4 class="mb-3">Data Jurusan</h4>
+<div class="container mx-auto p-6">
 
+    <h1 class="text-2xl font-bold mb-6">Data Jurusan</h1>
+
+    {{-- Alert --}}
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
     @endif
 
-    <!-- FORM TAMBAH JURUSAN -->
-    <form action="{{ route('admin.jurusan.store') }}" method="POST" class="row g-2 mb-4">
-        @csrf
-        <div class="col-md-5">
-            <input type="text" name="nama_jurusan" class="form-control" placeholder="Nama Jurusan" required>
-        </div>
-        <div class="col-md-2">
-            <input type="text" name="singkatan" class="form-control" placeholder="Singkatan (RPL)" required>
-        </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary w-100">Tambah</button>
-        </div>
-    </form>
+    {{-- Form Tambah Jurusan --}}
+    <div class="bg-white shadow rounded p-4 mb-6">
+        <h2 class="text-lg font-semibold mb-3">Tambah Jurusan</h2>
 
-    <!-- TABEL JURUSAN -->
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Jurusan</th>
-                <th>Singkatan</th>
-                <th width="150">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($items as $row)
-            <tr>
-                <form action="{{ route('admin.jurusan.update',$row->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <td>{{ $loop->iteration }}</td>
-                    <td>
-                        <input name="nama_jurusan" value="{{ $row->nama_jurusan }}" class="form-control" required>
+        <form action="{{ route('admin.jurusan.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            @csrf
+
+            <div>
+                <label class="block text-sm font-medium">Nama Jurusan</label>
+                <input type="text" name="nama_jurusan"
+                    class="w-full border rounded px-3 py-2"
+                    required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Singkatan</label>
+                <input type="text" name="singkatan"
+                    class="w-full border rounded px-3 py-2"
+                    required>
+            </div>
+
+            <div class="flex items-end">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {{-- Tabel Jurusan --}}
+    <div class="bg-white shadow rounded p-4">
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">No</th>
+                    <th class="border p-2">Nama Jurusan</th>
+                    <th class="border p-2">Singkatan</th>
+                    <th class="border p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($items as $item)
+                <tr>
+                    <td class="border p-2 text-center">{{ $loop->iteration }}</td>
+                    <td class="border p-2">{{ $item->nama_jurusan }}</td>
+                    <td class="border p-2">{{ $item->singkatan }}</td>
+                    <td class="border p-2 text-center space-x-2">
+
+                        {{-- Edit --}}
+                        <form action="{{ route('admin.jurusan.update', $item->id) }}" method="POST" class="inline">
+                            @csrf
+                            @method('PUT')
+
+                            <input type="text" name="nama_jurusan"
+                                value="{{ $item->nama_jurusan }}"
+                                class="border rounded px-2 py-1 w-40">
+
+                            <input type="text" name="singkatan"
+                                value="{{ $item->singkatan }}"
+                                class="border rounded px-2 py-1 w-20">
+
+                            <button class="bg-yellow-500 text-white px-3 py-1 rounded">
+                                Update
+                            </button>
+                        </form>
+
+                        {{-- Hapus --}}
+                        <a href="{{ route('admin.jurusan.destroy', $item->id) }}"
+                           onclick="return confirm('Yakin hapus jurusan ini?')"
+                           class="bg-red-600 text-white px-3 py-1 rounded">
+                            Hapus
+                        </a>
+
                     </td>
-                    <td>
-                        <input name="singkatan" value="{{ $row->singkatan }}" class="form-control" required>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-success mb-1">Update</button>
-                        <a href="{{ route('admin.jurusan.destroy',$row->id) }}"
-                           onclick="return confirm('Hapus?')"
-                           class="btn btn-sm btn-danger">Hapus</a>
-                    </td>
-                </form>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
 </div>
 @endsection

@@ -21,9 +21,9 @@ return new class extends Migration
             $table->enum('to_status', ['pending','in_progress','done','rejected']);
 
             $table->foreignId('changed_by')
-                  ->nullable()                 // HARUS DI SINI
+                  ->nullable()             
                   ->constrained('users')
-                  ->nullOnDelete();            // set null
+                  ->nullOnDelete();          
 
             $table->string('note', 255)->nullable();
             $table->timestamps();

@@ -16,9 +16,9 @@ return new class extends Migration
                   ->cascadeOnDelete();
 
             $table->foreignId('admin_id')
-                  ->nullable()              // HARUS DI SINI
+                  ->nullable()           
                   ->constrained('users')
-                  ->nullOnDelete();         // alias set null
+                  ->nullOnDelete();      
 
             $table->text('feedback_text');
             $table->timestamps();

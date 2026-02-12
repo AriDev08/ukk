@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('aspirasi', function (Blueprint $table) {
-            $table->id(); 
+            $table->id();
 
             $table->foreignId('user_id')
                   ->constrained()
@@ -20,14 +20,18 @@ return new class extends Migration {
                   ->nullOnDelete();
 
             $table->string('title', 200);
+            $table->string('location', 255);
             $table->text('description');
+
             $table->string('attachment_path')->nullable();
+
             $table->enum('status', [
                 'pending',
                 'in_progress',
                 'done',
                 'rejected'
             ])->default('pending');
+
             $table->timestamps();
         });
     }

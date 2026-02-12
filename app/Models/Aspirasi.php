@@ -10,6 +10,7 @@ class Aspirasi extends Model
 
     protected $fillable = [
         'user_id',
+        'location',
         'category_id',
         'title',
         'description',

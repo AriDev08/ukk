@@ -1,57 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use App\Http\Controllers\Controller;
-use App\Models\Jurusan;
-use Illuminate\Http\Request;
-
-class JurusanController extends Controller
-{
-    // Tampilkan daftar jurusan
-    public function index()
+return new class extends Migration {
+    public function up(): void
     {
-        $items = Jurusan::latest()->get(); // ambil semua jurusan
-        return view('admin.jurusan.index', compact('items'));
+        Schema::create('jurusan', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_jurusan', 150)->unique();
+            $table->string('singkatan', 20)->unique();
+            $table->timestamps();
+        });
     }
 
-    // Tambah jurusan baru
-    public function store(Request $request)
+    public function down(): void
     {
-        $request->validate([
-            'nama_jurusan' => 'required|unique:jurusan,nama_jurusan',
-            'singkatan' => 'required|unique:jurusan,singkatan',
-        ]);
-
-        Jurusan::create([
-            'nama_jurusan' => $request->nama_jurusan,
-            'singkatan' => $request->singkatan,
-        ]);
-
-        return redirect()->back()->with('success','Jurusan berhasil ditambahkan');
+        Schema::dropIfExists('jurusan');
     }
-
-    // Update jurusan
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_jurusan' => 'required|unique:jurusan,nama_jurusan,'.$id,
-            'singkatan' => 'required|unique:jurusan,singkatan,'.$id,
-        ]);
-
-        $jurusan = Jurusan::findOrFail($id);
-        $jurusan->update([
-            'nama_jurusan' => $request->nama_jurusan,
-            'singkatan' => $request->singkatan,
-        ]);
-
-        return redirect()->back()->with('success','Jurusan berhasil diupdate');
-    }
-
-    // Hapus jurusan
-    public function destroy($id)
-    {
-        Jurusan::findOrFail($id)->delete();
-        return redirect()->back()->with('success','Jurusan berhasil dihapus');
-    }
-}
+};
