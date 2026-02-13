@@ -54,11 +54,9 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-white z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-slate-100 shadow-2xl lg:shadow-none">
         <div class="flex flex-col h-full p-6">
             <div class="flex items-center gap-3 px-2 mb-10">
-                <div class="h-10 w-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
-                    <i class="bi bi-intersect text-white text-xl"></i>
-                </div>
+               
                 <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 uppercase">
-                    Sarana<span class="text-primary font-black">Sys</span>
+                    PENGADUAN<span class="text-primary font-black">APLIKASI</span>
                 </span>
             </div>
 

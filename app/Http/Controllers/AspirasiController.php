@@ -9,10 +9,8 @@ use Illuminate\Http\Request;
 
 class AspirasiController extends Controller
 {
-    public function index()
-{
-    return view('dashboard');
-}
+
+
     public function create()
     {
         $categories = Category::all();
@@ -36,10 +34,10 @@ class AspirasiController extends Controller
         }
 
         $aspirasi = Aspirasi::create([
-            'user_id'         => auth()->id(), // ✅ FIX
+            'user_id'         => auth()->id(), 
             'category_id'     => $request->category_id,
             'title'           => $request->title,
-            'location'        => $request->location, // ✅ LOKASI
+            'location'        => $request->location, 
             'description'     => $request->description,
             'attachment_path' => $path,
             'status'          => 'pending',
@@ -49,7 +47,7 @@ class AspirasiController extends Controller
             'aspirasi_id' => $aspirasi->id,
             'from_status' => null,
             'to_status'   => 'pending',
-            'changed_by'  => auth()->id(), // ✅ FIX
+            'changed_by'  => auth()->id(), 
             'note'        => 'Aspirasi dibuat oleh siswa',
         ]);
 
@@ -58,13 +56,20 @@ class AspirasiController extends Controller
             ->with('success', 'Aspirasi berhasil dikirim');
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        $items = Aspirasi::with('category')
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->paginate(10);
-
+        $query = Aspirasi::with(['category','histories.admin'])
+            ->where('user_id', auth()->id());
+    
+      
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+    
+        $items = $query->latest()
+                       ->paginate(10)
+                       ->withQueryString();
+    
         return view('aspirasi.history', compact('items'));
     }
 }

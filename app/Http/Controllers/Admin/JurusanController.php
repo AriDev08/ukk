@@ -8,14 +8,19 @@ use Illuminate\Http\Request;
 
 class JurusanController extends Controller
 {
-    // Tampilkan daftar jurusan
+
     public function index()
     {
-        $items = Jurusan::latest()->get(); // ambil semua jurusan
+        $items = Jurusan::latest()->paginate(10);
         return view('admin.jurusan.index', compact('items'));
     }
 
-    // Tambah jurusan baru
+    public function create()
+    {
+        return view('admin.jurusan.create');
+    }
+
+   
     public function store(Request $request)
     {
         $request->validate([
@@ -54,4 +59,5 @@ class JurusanController extends Controller
         Jurusan::findOrFail($id)->delete();
         return redirect()->back()->with('success','Jurusan berhasil dihapus');
     }
+   
 }

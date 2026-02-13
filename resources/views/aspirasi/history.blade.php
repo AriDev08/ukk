@@ -10,11 +10,41 @@
             <h3 class="text-xl font-bold text-slate-800">Lacak Aspirasi Anda</h3>
             <p class="text-sm text-slate-500">Pantau status dan tanggapan admin secara real-time.</p>
         </div>
-        <a href="{{ route('aspirasi.create') }}" 
-           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-secondary text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-100 group">
-            <i class="bi bi-plus-lg group-hover:rotate-90 transition-transform"></i>
-            <span>Buat Aspirasi Baru</span>
-        </a>
+
+       
+        <div class="flex items-center gap-3">
+      
+            <form method="GET" class="w-auto">
+                <div class="relative group">
+                    <select name="status"
+                            onchange="this.form.submit()"
+                            class="appearance-none w-44 pl-3 pr-8 py-2.5 
+                                   rounded-2xl border border-slate-200
+                                   bg-white text-sm font-bold text-slate-700
+                                   shadow-sm
+                                   hover:border-primary
+                                   focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary
+                                   transition-all">
+                        <option value="">Semua Status</option>
+                        <option value="pending"  {{ request('status')=='pending'?'selected':'' }}>Pending</option>
+                        <option value="process"  {{ request('status')=='process'?'selected':'' }}>Process</option>
+                        <option value="done"     {{ request('status')=='done'?'selected':'' }}>Done</option>
+                        <option value="rejected" {{ request('status')=='rejected'?'selected':'' }}>Rejected</option>
+                    </select>
+
+                    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400 group-hover:text-primary transition">
+                        <i class="bi bi-chevron-down text-sm"></i>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Create button -->
+            <a href="{{ route('aspirasi.create') }}" 
+               class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-100 group">
+                <i class="bi bi-plus-lg group-hover:rotate-90 transition-transform"></i>
+                <span>Buat Aspirasi Baru</span>
+            </a>
+        </div>
     </div>
 
     @if(session('success'))
@@ -92,16 +122,31 @@
                         </td>
 
                         <td class="px-6 py-5 rounded-r-2xl border-y border-r border-transparent group-hover:border-slate-100 text-right">
-                            @if($row->attachment_path)
-                                <a href="{{ asset('storage/'.$row->attachment_path) }}" 
+                            @php
+                            $filePath = $row->attachment_path ? asset('storage/'.$row->attachment_path) : null;
+                            $extension = $row->attachment_path ? strtolower(pathinfo($row->attachment_path, PATHINFO_EXTENSION)) : null;
+                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                        @endphp
+                        
+                        @if($filePath)
+                            @if(in_array($extension, $imageExtensions))
+                                <a href="{{ $filePath }}" target="_blank">
+                                    <img src="{{ $filePath }}" 
+                                         alt="Lampiran"
+                                         class="w-16 h-16 object-cover rounded-xl border border-slate-200 shadow-sm hover:scale-105 transition-all duration-300">
+                                </a>
+                            @else
+                                <a href="{{ $filePath }}" 
                                    target="_blank" 
                                    class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm">
                                     <i class="bi bi-file-earmark-arrow-down"></i>
                                     File
                                 </a>
-                            @else
-                                <span class="text-[10px] font-bold text-slate-300 uppercase">No File</span>
                             @endif
+                        @else
+                            <span class="text-[10px] font-bold text-slate-300 uppercase">No File</span>
+                        @endif
+                        
                         </td>
                     </tr>
                     @empty
@@ -133,15 +178,19 @@
 </div>
 
 <style>
-  
     .custom-pagination nav svg { width: 20px; display: inline; }
-    .custom-pagination nav div:first-child { display: none; } /* Hide mobile nav from default laravel */
+    .custom-pagination nav div:first-child { display: none; }
     .custom-pagination nav div:last-child span, 
     .custom-pagination nav div:last-child a { 
         border-radius: 12px !important; 
         margin: 0 2px;
         font-weight: 700;
         font-size: 12px;
+    }
+
+ 
+    @media (max-width: 767px) {
+        .space-y-8 > .flex { gap: 1rem; } 
     }
 </style>
 @endsection

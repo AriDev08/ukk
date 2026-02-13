@@ -5,16 +5,30 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Siswa;
 use App\Models\Kelas;
+use App\Models\Jurusan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class SiswaController extends Controller
 {
     public function index()
     {
-        $items = Siswa::with('kelas.jurusan')->latest()->get();
-        $kelas = Kelas::with('jurusan')->get();
+        $items = Siswa::with(['kelas','user'])
+                      ->latest()
+                      ->paginate(10);
+
+        $kelas = Kelas::orderBy('angkatan')->get();
 
         return view('admin.siswa.index', compact('items','kelas'));
+    }
+
+    public function create()
+    {
+        $kelas = Kelas::orderBy('angkatan')->get();
+        $jurusan = Jurusan::orderBy('nama_jurusan')->get();
+    
+        return view('admin.siswa.create', compact('kelas','jurusan'));
     }
 
     public function store(Request $request)
@@ -23,34 +37,52 @@ class SiswaController extends Controller
             'nis' => 'required|unique:siswa,nis',
             'nama' => 'required',
             'kelas_id' => 'required|exists:kelas,id',
-            'email' => 'nullable|email'
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6'
         ]);
 
+        // 1. Buat akun login
+        $user = User::create([
+            'name' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'siswa'
+        ]);
+
+        // 2. Buat data siswa
         Siswa::create([
+            'user_id' => $user->id,
             'nis' => $request->nis,
-            'nama' => $request->nama,
+            'nama_lengkap' => $request->nama,
             'kelas_id' => $request->kelas_id,
-            'email' => $request->email
         ]);
 
-        return redirect()->back()->with('success','Siswa berhasil ditambahkan');
+        return redirect()->route('admin.siswa.index')
+            ->with('success','Siswa & akun login berhasil dibuat');
     }
 
     public function update(Request $request, $id)
     {
+        $siswa = Siswa::findOrFail($id);
+
         $request->validate([
             'nis' => 'required|unique:siswa,nis,'.$id,
             'nama' => 'required',
             'kelas_id' => 'required|exists:kelas,id',
-            'email' => 'nullable|email'
+            'email' => 'required|email|unique:users,email,'.$siswa->user_id,
         ]);
 
-        $siswa = Siswa::findOrFail($id);
+        // Update user
+        $siswa->user->update([
+            'name' => $request->nama,
+            'email' => $request->email,
+        ]);
+
+        // Update siswa
         $siswa->update([
             'nis' => $request->nis,
-            'nama' => $request->nama,
+            'nama_lengkap' => $request->nama,
             'kelas_id' => $request->kelas_id,
-            'email' => $request->email
         ]);
 
         return redirect()->back()->with('success','Siswa berhasil diupdate');
@@ -58,7 +90,12 @@ class SiswaController extends Controller
 
     public function destroy($id)
     {
-        Siswa::findOrFail($id)->delete();
-        return redirect()->back()->with('success','Siswa berhasil dihapus');
+        $siswa = Siswa::findOrFail($id);
+
+        // hapus akun login juga
+        $siswa->user()->delete();
+        $siswa->delete();
+
+        return redirect()->back()->with('success','Siswa & akun berhasil dihapus');
     }
 }

@@ -25,4 +25,8 @@ class AspirasiHistory extends Model
     {
         return $this->belongsTo(User::class, 'changed_by');
     }
+    public function admin()
+{
+    return $this->belongsTo(User::class, 'changed_by');
+}
 }

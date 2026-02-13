@@ -12,25 +12,28 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
-    {
-        $cred = $request->only('email','password');
+   public function login(Request $request)
+{
+    $cred = $request->only('email','password');
 
-        if (Auth::attempt($cred)) {
-            $request->session()->regenerate();
-            return redirect('/dashboard');
+    if (Auth::attempt($cred)) {
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return redirect('/admin/aspirasi');
         }
 
-        return back()->withErrors([
-            'email' => 'Login gagal'
-        ]);
+        if ($user->siswa) {
+            return redirect('/aspirasi/create');
+        }
+
+        Auth::logout();
+        return back()->withErrors(['email' => 'Akun tidak valid']);
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/login');
-    }
+    return back()->withErrors(['email' => 'Login gagal']);
+}
+
 }
