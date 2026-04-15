@@ -91,10 +91,13 @@
                     <div class="space-y-1">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Dokumen Bukti</label>
                         @if($aspirasi->attachment_path)
-                            <a href="{{ asset('storage/'.$aspirasi->attachment_path) }}" target="_blank" class="flex items-center gap-2 text-primary font-black text-[11px] hover:underline mt-2">
-                                <i class="bi bi-file-earmark-text"></i> LIHAT DOKUMEN
-                            </a>
-                        @else
+                        <div class="mt-3">
+                            <img src="{{ asset('storage/'.$aspirasi->attachment_path) }}" 
+                                 alt="Lampiran"
+                                 class="rounded-xl border border-slate-200 shadow-sm max-h-64 object-cover cursor-pointer hover:scale-105 transition"
+                                 onclick="window.open(this.src, '_blank')">
+                        </div>
+                    @else
                             <p class="text-[11px] text-slate-400 italic">Tidak ada lampiran</p>
                         @endif
                     </div>
