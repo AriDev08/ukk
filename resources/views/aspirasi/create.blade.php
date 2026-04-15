@@ -75,10 +75,10 @@
         </div>
 
         <div class="group">
-            <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[2px] mb-3 ml-1 group-focus-within:text-primary transition-colors">Deskripsi Kejadian/Usulan</label>
+            <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[2px] mb-3 ml-1 group-focus-within:text-primary transition-colors">Deskripsi Kejadian</label>
             <textarea name="description" rows="6" 
                       class="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-[2rem] focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5 transition-all duration-300 outline-none font-bold text-slate-700 placeholder:text-slate-300 placeholder:font-medium resize-none"
-                      placeholder="Gunakan prinsip 5W + 1H untuk penjelasan yang lebih akurat agar admin mudah menindaklanjuti..." required></textarea>
+                      placeholder="masukan deskripsi di sini dengan lengkap dan detail" required></textarea>
         </div>
 
         <div class="group">
@@ -93,7 +93,7 @@
                               focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5
                               transition-all duration-300 outline-none font-bold text-slate-700
                               placeholder:text-slate-300 placeholder:font-medium"
-                       placeholder="Contoh: Perpustakaan Lantai 2 / Ruang BK / Kelas X RPL 1"
+                       placeholder="Contoh: Perpustakaan Lantai 3 / Ruang BK / Kelas X RPL 1"
                        required>
         
                 <div class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">
@@ -144,10 +144,8 @@
     const nameDisplay = document.getElementById('file-name-display');
     const nameText = document.getElementById('file-name-text');
 
-    // Trigger Klik Area
     dropArea.addEventListener('click', () => fileInput.click());
 
-    // UI Feedback saat file dipilih
     fileInput.onchange = function() {
         const fileName = this.files[0]?.name;
         if (fileName) {
@@ -157,7 +155,6 @@
         }
     };
 
-    // Prevent default drag behaviors
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, e => {
             e.preventDefault();
@@ -165,7 +162,6 @@
         }, false);
     });
 
-    // Toggle class saat drag over
     ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, () => dropArea.classList.add('border-primary', 'bg-indigo-50/50'), false);
     });
@@ -174,12 +170,11 @@
         dropArea.addEventListener(eventName, () => dropArea.classList.remove('border-primary', 'bg-indigo-50/50'), false);
     });
 
-    // Handle Drop
     dropArea.addEventListener('drop', e => {
         const dt = e.dataTransfer;
         const files = dt.files;
         fileInput.files = files;
-        // Trigger UI change
+        
         fileInput.dispatchEvent(new Event('change'));
     });
 </script>

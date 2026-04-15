@@ -9,12 +9,18 @@ return new class extends Migration {
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
+            
             $table->enum('angkatan', ['X','XI','XII']);
-            $table->string('nama_kelas', 50);  
-            $table->string('singkatan', 20);    
+            $table->string('nama_kelas', 50);
+            $table->string('singkatan', 20);
+
+         
+            $table->foreignId('jurusan_id')
+                  ->constrained('jurusan')
+                  ->onDelete('cascade');
+
             $table->timestamps();
         });
-        
     }
 
     public function down(): void

@@ -16,10 +16,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/aspirasi/history', [AspirasiController::class, 'history'])->name('aspirasi.history');
 });
 
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth','role:admin'])
+    ->group(function () {
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+        Route::get('/impersonate', [AdminUserController::class, 'impersonatePage'])
+        ->name('impersonate.page');
+    
+    // start impersonate
+    Route::post('/impersonate/{user}', [AdminUserController::class, 'impersonate'])
+    ->name('impersonate.start');
+    
 
-   
     Route::get('/aspirasi', [AspirasiAdminController::class, 'index'])->name('aspirasi.index');
     Route::get('/aspirasi/{id}', [AspirasiAdminController::class, 'show'])->name('aspirasi.show');
     Route::post('/aspirasi/{id}/feedback', [AspirasiAdminController::class, 'feedback'])->name('aspirasi.feedback');
@@ -49,11 +58,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('admin-users', AdminUserController::class);
 });
 
+Route::post('/admin/impersonate-stop', [AdminUserController::class, 'stopImpersonate'])
+    ->name('admin.impersonate.stop');
     Route::get('/', function () {
         return redirect()->route('login');
     });
 
     Route::get('/login', [AuthController::class,'showLogin'])->name('login');
     Route::post('/login', [AuthController::class,'login'])->name('login.process');
-    Route::post('/logout', [AuthController::class,'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 

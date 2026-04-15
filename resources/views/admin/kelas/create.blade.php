@@ -32,12 +32,24 @@
         @csrf
 
        
-        <select name="angkatan" class="form-control" required>
-            <option value="">-- Pilih Angkatan --</option>
-            <option value="X">X</option>
-            <option value="XI">XI</option>
-            <option value="XII">XII</option>
-        </select>
+       {{-- Angkatan --}}
+<div class="group">
+    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[2px] mb-3 ml-1">
+        Angkatan
+    </label>
+
+    <select name="angkatan"
+        class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem]
+               focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5
+               transition-all outline-none font-bold text-slate-700"
+        required>
+        <option value="">-- Pilih Angkatan --</option>
+        <option value="X" {{ old('angkatan') == 'X' ? 'selected' : '' }}>X</option>
+        <option value="XI" {{ old('angkatan') == 'XI' ? 'selected' : '' }}>XI</option>
+        <option value="XII" {{ old('angkatan') == 'XII' ? 'selected' : '' }}>XII</option>
+    </select>
+</div>
+
         
 
         {{-- Nama Kelas --}}
@@ -63,6 +75,25 @@
                        transition-all outline-none font-bold text-slate-700"
                 placeholder="XRPL1">
         </div>
+        {{-- Jurusan --}}
+<div class="group">
+    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[2px] mb-3 ml-1">
+        Jurusan
+    </label>
+    <select name="jurusan_id"
+        class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem]
+               focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5
+               transition-all outline-none font-bold text-slate-700"
+        required>
+        <option value="">-- Pilih Jurusan --</option>
+        @foreach ($jurusan as $j)
+            <option value="{{ $j->id }}">
+                {{ $j->nama_jurusan }} ({{ $j->singkatan }})
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
         {{-- Actions --}}
         <div class="flex items-center justify-between pt-8 border-t border-slate-100">

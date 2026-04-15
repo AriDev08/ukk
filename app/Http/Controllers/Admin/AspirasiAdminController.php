@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Aspirasi;
 use App\Models\AspirasiHistory;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class AspirasiAdminController extends Controller
 {
@@ -16,7 +17,12 @@ class AspirasiAdminController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.aspirasi.index', compact('items'));
+        $top_categories = Category::withCount('aspirasi')
+            ->orderBy('aspirasi_count', 'desc')
+            ->take(4)
+            ->get();
+    
+        return view('admin.aspirasi.index', compact('items', 'top_categories'));
     }
 
     // detail aspirasi
@@ -31,7 +37,7 @@ class AspirasiAdminController extends Controller
     {
         $request->validate([
             'status' => 'required|in:pending,in_progress,done,rejected',
-            'note' => 'required'
+            'note' => 'required|string|min:5' // Menjamin note adalah teks dan bukan hanya spasi
         ]);
     
         $aspirasi = Aspirasi::findOrFail($id);
@@ -49,7 +55,7 @@ class AspirasiAdminController extends Controller
             'note' => $request->note
         ]);
     
-        return redirect()->back()->with('success','Umpan balik berhasil disimpan');
+        return redirect()->back()->with('success', 'Umpan balik berhasil disimpan');
     }
     
     

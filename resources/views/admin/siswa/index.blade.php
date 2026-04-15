@@ -55,24 +55,27 @@
                                 {{ $row->nis }}
                             </span>
                         </td>
-
-                        <td class="px-6 py-5 border-y border-transparent group-hover:border-slate-100">
+                        <td class="px-6 py-5">
                             <span class="text-sm font-bold text-slate-800">
-                                {{ $row->nama }}
+                                {{ $row->nama_lengkap ?? '-' }}
                             </span>
                         </td>
-
+                        
                         <td class="px-6 py-5 border-y border-transparent group-hover:border-slate-100">
                             <span class="inline-flex px-3 py-1 rounded-xl text-[10px] font-black bg-indigo-100 text-indigo-600 border border-indigo-200">
-                                {{ $row->kelas->singkatan }}
+                                {{ optional($row->kelas)->singkatan ?? '-' }}
                             </span>
                         </td>
+                        
+                        
 
-                        <td class="px-6 py-5 border-y border-transparent group-hover:border-slate-100">
+                        <td class="px-6 py-5">
                             <span class="text-xs font-bold text-slate-600">
-                                {{ $row->kelas->jurusan->kode ?? '-' }}
+                                {{ optional($row->kelas->jurusan)->singkatan ?? '-' }}
+
                             </span>
                         </td>
+                        
 
                         <td class="px-6 py-5 rounded-r-2xl border-y border-r border-transparent group-hover:border-slate-100 text-right space-x-2">
                             

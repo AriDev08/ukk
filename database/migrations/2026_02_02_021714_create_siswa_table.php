@@ -21,10 +21,6 @@ return new class extends Migration {
                   ->constrained('kelas')
                   ->cascadeOnDelete();
         
-            $table->foreignId('jurusan_id')
-                  ->constrained('jurusan')
-                  ->cascadeOnDelete();
-        
             $table->string('no_hp', 20)->nullable();
             $table->text('alamat')->nullable();
         

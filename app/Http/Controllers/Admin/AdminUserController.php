@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
@@ -26,7 +27,7 @@ class AdminUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required',
+            'name'     => 'required|string',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6'
         ]);
@@ -78,4 +79,61 @@ class AdminUserController extends Controller
             ->route('admin.admin-users.index')
             ->with('success', 'Admin berhasil dihapus');
     }
+
+    /* ================= IMPERSONATION ================= */
+
+    public function impersonatePage(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+    
+        $siswa = User::where('role', 'siswa')
+            ->when($request->nis, function ($q) use ($request) {
+                $q->where('nis', 'like', '%' . $request->nis . '%');
+            })
+            ->orderBy('name')
+            ->get();
+    
+        return view('admin.impersonate', compact('siswa'));
+    }
+    
+    
+
+    public function impersonate(User $user)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        if ($user->role !== 'siswa') {
+            abort(403, 'Hanya bisa impersonate siswa');
+        }
+
+        // simpan admin asli
+        session(['impersonator' => Auth::id()]);
+
+        // login sebagai siswa
+        Auth::loginUsingId($user->id);
+
+        // PENTING: redirect ke dashboard siswa
+        return redirect()->route('aspirasi.create')
+            ->with('success', 'Login sebagai ' . $user->name);
+    }
+
+    public function stopImpersonate()
+    {
+        if (!session()->has('impersonator')) {
+            abort(403);
+        }
+    
+        $adminId = session('impersonator');
+    
+        Auth::loginUsingId($adminId);
+        session()->forget('impersonator');
+    
+        return redirect()->route('admin.aspirasi.index')
+            ->with('success', 'Kembali ke akun admin');
+    }
+    
 }

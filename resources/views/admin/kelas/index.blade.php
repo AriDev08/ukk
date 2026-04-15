@@ -49,9 +49,9 @@
                             </span>
                         </td>
 
-                        <td class="px-6 py-5 border-y border-transparent group-hover:border-slate-100">
+                        <td class="px-6 py-5">
                             <span class="text-xs font-bold text-slate-600">
-                                {{ $row->nama_jurusan ?? '-' }}
+                                {{ optional($row->jurusan)->singkatan ?? '-' }}
                             </span>
                         </td>
 

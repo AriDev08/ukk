@@ -48,7 +48,7 @@
                 class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem]
                        focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5
                        transition-all outline-none font-bold text-slate-700"
-                placeholder="I Made Arya Santika" required>
+                placeholder="I Dewa Made ari Santika" required>
         </div>
 
         <div class="group">
@@ -69,17 +69,6 @@
             </select>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Jurusan</label>
-            <select name="jurusan_id" class="form-select" required>
-                <option value="">-- Pilih Jurusan --</option>
-                @foreach($jurusan as $j)
-                    <option value="{{ $j->id }}">
-                        {{ $j->nama_jurusan }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
         
 
         <div class="group">
@@ -90,19 +79,10 @@
                 class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem]
                        focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5
                        transition-all outline-none font-bold text-slate-700"
-                placeholder="arya@gmail.com">
+                placeholder="ari@gmail.com">
         </div>
 
-        <div class="group">
-            <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[2px] mb-3 ml-1">
-                Password Login
-            </label>
-            <input type="password" name="password"
-                class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem]
-                       focus:bg-white focus:border-primary focus:ring-8 focus:ring-primary/5
-                       transition-all outline-none font-bold text-slate-700"
-                placeholder="Minimal 6 karakter" required>
-        </div>
+        
 
         <div class="flex items-center justify-between pt-8 border-t border-slate-100">
             <a href="{{ route('admin.siswa.index') }}"

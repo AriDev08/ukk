@@ -51,11 +51,18 @@
                 </a>
 
                 <button type="submit"
-                        class="px-8 py-3 rounded-2xl bg-darkNavy text-white
-                               font-black text-xs uppercase tracking-widest
-                               hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-                    Simpan Kategori
-                </button>
+                class="flex items-center justify-center gap-2 
+                       px-5 py-3 
+                       bg-indigo-600 text-white 
+                       font-semibold text-sm 
+                       rounded-xl 
+                       hover:bg-indigo-700 
+                       transition shadow-md">
+                <i class="bi bi-check-lg"></i>
+                Simpan Kategori
+            </button>
+            
+            
             </div>
 
         </form>
